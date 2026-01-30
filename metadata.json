@@ -1,0 +1,5 @@
+{
+  "name": "MIDI Morph",
+  "description": "A real-time generative MIDI playground. Sculpt random musical patterns with intuitive sliders or use AI to discover new inspirations, then export to your DAW.",
+  "requestFramePermissions": []
+}
