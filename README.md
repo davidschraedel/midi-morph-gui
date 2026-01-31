@@ -6,7 +6,9 @@
 
 This contains everything you need to run your app locally.
 
-View your app in AI Studio: https://ai.studio/apps/drive/1LMFm744ofJp9pZNGMBEbQhOGXi6Qzhqy
+View app in AI Studio: https://ai.studio/apps/drive/1LMFm744ofJp9pZNGMBEbQhOGXi6Qzhqy
+
+View app the cool way: [COOOOOLLLLL]('https://davidschraedel.github.io/midi-morph-gui/')  
 
 ## Run Locally
 
