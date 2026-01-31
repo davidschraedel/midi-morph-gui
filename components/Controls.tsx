@@ -21,7 +21,7 @@ export const Controls: React.FC<ControlsProps> = ({ params, onChange, isGenerati
   );
 
   return (
-    <div className="flex flex-col gap-1 p-4 h-full overflow-y-auto custom-scrollbar">
+    <div className="flex flex-col gap-1 p-4 md:h-full md:overflow-y-auto custom-scrollbar">
       
       {/* Structure */}
       <SectionTitle icon={Disc} title="Structure" />

@@ -21,10 +21,32 @@ const App: React.FC = () => {
   }, [notes]);
 
   // Real-time regeneration
+  // Explicit dependencies ensure Tempo doesn't trigger regeneration,
+  // but humanize DOES (it will now only affect timing/vel due to stable seed)
   useEffect(() => {
     const newNotes = generateNotes(params);
     setNotes(newNotes);
-  }, [params]);
+  }, [
+    params.bars,
+    params.rootNote,
+    params.scale,
+    params.density,
+    params.velocityMin,
+    params.velocityMax,
+    params.pitchRange,
+    params.noteLengthMin,
+    params.noteLengthMax,
+    params.humanize,
+    params.chaos,
+    params.seed
+  ]);
+
+  const handleRandomize = () => {
+    setParams(prev => ({
+      ...prev,
+      seed: Math.floor(Math.random() * 1000000)
+    }));
+  };
 
   // Audio Preview Logic
   const initAudio = () => {
@@ -87,10 +109,10 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen w-screen bg-slate-950 text-slate-100 font-sans overflow-hidden">
+    <div className="flex flex-col md:flex-row h-screen w-screen bg-slate-950 text-slate-100 font-sans overflow-auto md:overflow-hidden">
       
       {/* Sidebar */}
-      <aside className="w-80 flex flex-col border-r border-slate-800 bg-slate-900 z-10 shadow-2xl">
+      <aside className="w-full md:w-80 flex-none flex flex-col border-r-0 border-b md:border-b-0 md:border-r border-slate-800 bg-slate-900 z-10 shadow-2xl h-auto md:h-full">
         <div className="p-4 border-b border-slate-800 flex items-center gap-2">
             <div className="w-8 h-8 rounded bg-gradient-to-br from-sky-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-sky-900/50">
                 <Music4 size={18} className="text-white" />
@@ -98,23 +120,23 @@ const App: React.FC = () => {
             <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-indigo-400">MIDI Morph</h1>
         </div>
         
-        <div className="flex-1 overflow-hidden">
+        <div className="md:flex-1 md:overflow-hidden">
           <Controls params={params} onChange={setParams} isGenerating={false} />
         </div>
         
-        <div className="p-4 border-t border-slate-800 bg-slate-900/50 text-xs text-slate-500 text-center">
+        <div className="p-4 border-t border-slate-800 bg-slate-900/50 text-xs text-slate-500 text-center hidden md:block">
             v1.0.0 &bull; Local Generation
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col bg-slate-950 relative">
+      <main className="flex-1 flex flex-col bg-slate-950 relative min-w-0 min-h-[500px] md:min-h-0">
         
         {/* Top Bar */}
-        <header className="h-16 border-b border-slate-800 flex items-center justify-between px-6 bg-slate-900/30 backdrop-blur-sm">
+        <header className="h-auto md:h-16 border-b border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between p-4 md:px-6 bg-slate-900/30 backdrop-blur-sm gap-4">
             <div className="flex items-center gap-4">
                <button 
-                onClick={() => setParams({...params})} // Trigger regen
+                onClick={handleRandomize}
                 className="flex items-center gap-2 px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-sm font-medium transition-colors"
                >
                  <RefreshCw size={14} />
@@ -122,31 +144,35 @@ const App: React.FC = () => {
                </button>
             </div>
             
-            <div className="flex items-center gap-3">
-               <div className="px-4 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-xs text-slate-500">
-                  {notes.length} Notes Generated
+            <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+               <div className="px-4 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-xs text-slate-500 whitespace-nowrap">
+                  {notes.length} Notes
                </div>
-               <button 
-                 onClick={playPreview}
-                 className="flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium shadow-lg shadow-indigo-900/20 active:scale-95 transition-all"
-               >
-                 <Play size={16} fill="currentColor" />
-                 Preview
-               </button>
-               <button 
-                 onClick={handleDownload}
-                 className="flex items-center gap-2 px-4 py-2 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-900 font-bold shadow-lg shadow-sky-900/20 active:scale-95 transition-all"
-               >
-                 <Download size={18} />
-                 Export MIDI
-               </button>
+               <div className="flex gap-2 ml-auto">
+                 <button 
+                   onClick={playPreview}
+                   className="flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium shadow-lg shadow-indigo-900/20 active:scale-95 transition-all"
+                 >
+                   <Play size={16} fill="currentColor" />
+                   <span className="hidden sm:inline">Preview</span>
+                 </button>
+                 <button 
+                   onClick={handleDownload}
+                   className="flex items-center gap-2 px-4 py-2 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-900 font-bold shadow-lg shadow-sky-900/20 active:scale-95 transition-all"
+                 >
+                   <Download size={18} />
+                   <span className="hidden sm:inline">Export</span>
+                 </button>
+               </div>
             </div>
         </header>
 
         {/* Visualization Area */}
-        <div className="flex-1 p-6 overflow-hidden flex flex-col">
-            <Visualizer notes={notes} params={params} />
-            <div className="mt-4 text-center text-slate-500 text-xs font-mono">
+        <div className="flex-1 p-4 md:p-6 overflow-hidden flex flex-col">
+            <div className="flex-1 overflow-x-auto overflow-y-hidden border border-slate-800 rounded-lg bg-slate-900">
+                <Visualizer notes={notes} params={params} />
+            </div>
+            <div className="mt-4 text-center text-slate-500 text-xs font-mono hidden md:block">
                 Dragging sliders updates the generative algorithm in real-time.
             </div>
         </div>

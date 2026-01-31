@@ -30,7 +30,7 @@ export const Visualizer: React.FC<VisualizerProps> = ({ notes, params }) => {
   };
 
   return (
-    <div className="w-full h-full overflow-hidden bg-slate-900 rounded-lg border border-slate-700 relative shadow-inner">
+    <div className="w-full h-full min-w-[800px] bg-slate-900 relative">
       {/* Grid Background */}
       <svg className="w-full h-full" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none">
         <rect width={width} height={height} fill="#0f172a" />

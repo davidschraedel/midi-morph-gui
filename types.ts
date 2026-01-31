@@ -25,6 +25,7 @@ export interface GeneratorParams {
   noteLengthMax: number; // in 16th notes
   humanize: number; // 0-1 timing offset
   chaos: number; // 0-1 randomness factor
+  seed: number; // Seed for deterministic generation
 }
 
 export interface MidiNote {

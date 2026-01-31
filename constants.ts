@@ -12,7 +12,8 @@ export const DEFAULT_PARAMS: GeneratorParams = {
   noteLengthMin: 1,
   noteLengthMax: 4,
   humanize: 0.1,
-  chaos: 0.2
+  chaos: 0.2,
+  seed: 12345 // Default seed
 };
 
 export const NOTE_COLORS = {
