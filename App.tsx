@@ -1,25 +1,18 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Download, Play, RefreshCw, Wand2, Loader2, Music4 } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Download, Play, RefreshCw, Music4 } from 'lucide-react';
 import { GeneratorParams, MidiNote } from './types';
 import { DEFAULT_PARAMS } from './constants';
 import { generateNotes } from './services/midiGenerator';
 import { createMidiFile } from './services/midiWriter';
-import { generateParamsWithAI } from './services/geminiService';
 import { Controls } from './components/Controls';
 import { Visualizer } from './components/Visualizer';
 
 const App: React.FC = () => {
   const [params, setParams] = useState<GeneratorParams>(DEFAULT_PARAMS);
   const [notes, setNotes] = useState<MidiNote[]>([]);
-  const [isPlaying, setIsPlaying] = useState(false); // Visualization state mainly
-  const [aiPrompt, setAiPrompt] = useState('');
-  const [isAiLoading, setIsAiLoading] = useState(false);
-  const [aiError, setAiError] = useState<string | null>(null);
-
+  
   // Audio Context for Preview (Simple Oscillator)
   const audioCtxRef = useRef<AudioContext | null>(null);
-  const nextNoteTimeRef = useRef<number>(0);
-  const schedulerTimerRef = useRef<number | null>(null);
   const notesRef = useRef<MidiNote[]>([]); // Ref to access current notes in audio loop
 
   // Keep notes ref updated
@@ -93,22 +86,6 @@ const App: React.FC = () => {
     URL.revokeObjectURL(url);
   };
 
-  const handleAiGenerate = async () => {
-    if (!aiPrompt.trim()) return;
-    setIsAiLoading(true);
-    setAiError(null);
-    try {
-      const newParams = await generateParamsWithAI(aiPrompt);
-      if (Object.keys(newParams).length > 0) {
-          setParams(prev => ({...prev, ...newParams}));
-      }
-    } catch (e) {
-      setAiError("Failed to generate settings. Check API Key or try again.");
-    } finally {
-      setIsAiLoading(false);
-    }
-  };
-
   return (
     <div className="flex h-screen w-screen bg-slate-950 text-slate-100 font-sans overflow-hidden">
       
@@ -124,30 +101,9 @@ const App: React.FC = () => {
         <div className="flex-1 overflow-hidden">
           <Controls params={params} onChange={setParams} isGenerating={false} />
         </div>
-
-        {/* AI Prompt Area */}
-        <div className="p-4 border-t border-slate-800 bg-slate-900/50">
-          <label className="text-xs text-slate-400 font-semibold mb-2 flex items-center gap-1">
-            <Wand2 size={12} className="text-purple-400" />
-            AI ASSISTANT
-          </label>
-          <div className="relative">
-            <textarea
-              className="w-full bg-slate-800 border border-slate-700 rounded p-2 text-xs text-slate-200 resize-none focus:outline-none focus:border-purple-500 transition-colors"
-              rows={3}
-              placeholder="e.g. 'A fast, chaotic bassline in D Minor'..."
-              value={aiPrompt}
-              onChange={(e) => setAiPrompt(e.target.value)}
-            />
-            <button
-              onClick={handleAiGenerate}
-              disabled={isAiLoading || !aiPrompt}
-              className="absolute bottom-2 right-2 p-1.5 rounded-md bg-purple-600 hover:bg-purple-500 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-            >
-              {isAiLoading ? <Loader2 size={14} className="animate-spin" /> : <Wand2 size={14} />}
-            </button>
-          </div>
-          {aiError && <p className="text-red-400 text-[10px] mt-1">{aiError}</p>}
+        
+        <div className="p-4 border-t border-slate-800 bg-slate-900/50 text-xs text-slate-500 text-center">
+            v1.0.0 &bull; Local Generation
         </div>
       </aside>
 
