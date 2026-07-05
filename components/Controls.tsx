@@ -1,6 +1,5 @@
-import React from 'react';
-import { GeneratorParams, ScaleType, NOTE_NAMES } from '../types';
-import { Sliders, Activity, Music, Zap, Clock, Disc } from 'lucide-react';
+import React from "react";
+import { GeneratorParams, ScaleType, NOTE_NAMES } from "../types";
 
 interface ControlsProps {
   params: GeneratorParams;
@@ -8,167 +7,285 @@ interface ControlsProps {
   isGenerating: boolean;
 }
 
-export const Controls: React.FC<ControlsProps> = ({ params, onChange, isGenerating }) => {
-  const handleChange = <K extends keyof GeneratorParams>(key: K, value: GeneratorParams[K]) => {
+type SectionVariant = "black" | "red" | "yellow" | "blue";
+
+const sectionStyles: Record<SectionVariant, string> = {
+  black: "bg-bauhaus-black text-bauhaus-white",
+  red: "bg-bauhaus-red text-bauhaus-white",
+  yellow: "bg-bauhaus-yellow text-bauhaus-black",
+  blue: "bg-bauhaus-blue text-bauhaus-white",
+};
+
+const valueStyles: Record<SectionVariant, string> = {
+  black: "text-bauhaus-blue",
+  red: "text-bauhaus-red",
+  yellow: "text-bauhaus-black",
+  blue: "text-bauhaus-blue",
+};
+
+const inputClass =
+  "bauhaus-input w-full border-3 border-bauhaus-black bg-bauhaus-white p-2 font-bold text-sm shadow-solid-sm focus:outline-none rounded-none";
+
+export const Controls: React.FC<ControlsProps> = ({ params, onChange }) => {
+  const handleChange = <K extends keyof GeneratorParams>(
+    key: K,
+    value: GeneratorParams[K],
+  ) => {
     onChange({ ...params, [key]: value });
   };
 
-  const SectionTitle = ({ icon: Icon, title }: { icon: any, title: string }) => (
-    <div className="flex items-center gap-2 mb-3 text-slate-300 font-medium border-b border-slate-700 pb-2 mt-6 first:mt-0">
-      <Icon size={16} className="text-sky-400" />
-      <span className="text-sm uppercase tracking-wider">{title}</span>
+  const SectionTitle = ({
+    title,
+    variant,
+  }: {
+    title: string;
+    variant: SectionVariant;
+  }) => (
+    <h2
+      className={`inline-block px-1.5 py-0.5 text-xs font-bold uppercase tracking-wide mb-2 shadow-solid-sm ${sectionStyles[variant]}`}
+    >
+      {title}
+    </h2>
+  );
+
+  const SliderLabel = ({
+    label,
+    value,
+    variant,
+  }: {
+    label: string;
+    value: string;
+    variant: SectionVariant;
+  }) => (
+    <div className="flex justify-between items-baseline mb-1">
+      <label className="text-xs font-bold uppercase tracking-wide">
+        {label}
+      </label>
+      <span className={`text-sm font-extrabold ${valueStyles[variant]}`}>
+        {value}
+      </span>
     </div>
   );
 
   return (
-    <div className="flex flex-col gap-1 p-4 md:h-full md:overflow-y-auto custom-scrollbar">
-      
+    <div className="flex flex-col md:h-full md:overflow-y-auto custom-scrollbar">
       {/* Structure */}
-      <SectionTitle icon={Disc} title="Structure" />
-      
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="text-xs text-slate-400 mb-1 block">Scale</label>
-          <select 
-            value={params.scale}
-            onChange={(e) => handleChange('scale', e.target.value as ScaleType)}
-            className="w-full bg-slate-800 text-slate-200 text-sm rounded border border-slate-700 p-2 focus:border-sky-500 focus:outline-none"
-          >
-            {Object.values(ScaleType).map(s => (
-              <option key={s} value={s}>{s}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-           <label className="text-xs text-slate-400 mb-1 block">Root Note</label>
-           <select 
-            value={params.rootNote}
-            onChange={(e) => handleChange('rootNote', Number(e.target.value))}
-            className="w-full bg-slate-800 text-slate-200 text-sm rounded border border-slate-700 p-2 focus:border-sky-500 focus:outline-none"
-          >
-            {Array.from({length: 24}).map((_, i) => { // C3 to B4
-                const val = 48 + i;
-                return <option key={val} value={val}>{NOTE_NAMES[val % 12]}{Math.floor(val/12)}</option>
-            })}
-          </select>
-        </div>
-      </div>
+      <div className="border-b-4 border-bauhaus-black p-5">
+        <SectionTitle title="Structure" variant="black" />
 
-      <div className="mt-4">
-        <label className="text-xs text-slate-400 flex justify-between">
-          <span>Tempo (BPM)</span>
-          <span className="text-sky-400">{params.tempo}</span>
-        </label>
-        <input 
-          type="range" min="60" max="200" value={params.tempo} 
-          onChange={(e) => handleChange('tempo', Number(e.target.value))}
-          className="w-full mt-2"
-        />
+        <div className="grid grid-cols-2 gap-4 mb-5">
+          <div>
+            <label className="block text-xs font-bold uppercase mb-1 tracking-wide">
+              Scale
+            </label>
+            <select
+              value={params.scale}
+              onChange={(e) =>
+                handleChange("scale", e.target.value as ScaleType)
+              }
+              className={inputClass}
+            >
+              {Object.values(ScaleType).map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs font-bold uppercase mb-1 tracking-wide">
+              Root
+            </label>
+            <select
+              value={params.rootNote}
+              onChange={(e) => handleChange("rootNote", Number(e.target.value))}
+              className={inputClass}
+            >
+              {Array.from({ length: 24 }).map((_, i) => {
+                const val = 48 + i;
+                return (
+                  <option key={val} value={val}>
+                    {NOTE_NAMES[val % 12]}
+                    {Math.floor(val / 12)}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <SliderLabel
+            label="Tempo"
+            value={`${params.tempo} BPM`}
+            variant="black"
+          />
+          <input
+            type="range"
+            min="60"
+            max="200"
+            value={params.tempo}
+            onChange={(e) => handleChange("tempo", Number(e.target.value))}
+            className="bauhaus-slider"
+          />
+        </div>
       </div>
 
       {/* Generation */}
-      <SectionTitle icon={Activity} title="Generation" />
+      <div className="border-b-4 border-bauhaus-black p-5 bg-[#fafafa]">
+        <SectionTitle title="Generation" variant="red" />
 
-      <div>
-        <label className="text-xs text-slate-400 flex justify-between">
-          <span>Density</span>
-          <span className="text-sky-400">{Math.round(params.density * 100)}%</span>
-        </label>
-        <input 
-          type="range" min="0" max="1" step="0.05" value={params.density} 
-          onChange={(e) => handleChange('density', Number(e.target.value))}
-          className="w-full mt-2"
-        />
-      </div>
+        <div className="mb-5">
+          <SliderLabel
+            label="Density"
+            value={`${Math.round(params.density * 100)}%`}
+            variant="red"
+          />
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.05"
+            value={params.density}
+            onChange={(e) => handleChange("density", Number(e.target.value))}
+            className="bauhaus-slider thumb-red"
+          />
+        </div>
 
-      <div className="mt-4">
-        <label className="text-xs text-slate-400 flex justify-between">
-          <span>Pitch Range (+/-)</span>
-          <span className="text-sky-400">{params.pitchRange} semi</span>
-        </label>
-        <input 
-          type="range" min="0" max="24" value={params.pitchRange} 
-          onChange={(e) => handleChange('pitchRange', Number(e.target.value))}
-          className="w-full mt-2"
-        />
-      </div>
+        <div className="mb-5">
+          <SliderLabel
+            label="Pitch Range"
+            value={`${params.pitchRange} semi`}
+            variant="red"
+          />
+          <input
+            type="range"
+            min="0"
+            max="24"
+            value={params.pitchRange}
+            onChange={(e) => handleChange("pitchRange", Number(e.target.value))}
+            className="bauhaus-slider thumb-red"
+          />
+        </div>
 
-      <div className="mt-4">
-        <label className="text-xs text-slate-400 flex justify-between">
-          <span>Chaos / Randomness</span>
-          <span className="text-sky-400">{Math.round(params.chaos * 100)}%</span>
-        </label>
-        <input 
-          type="range" min="0" max="1" step="0.05" value={params.chaos} 
-          onChange={(e) => handleChange('chaos', Number(e.target.value))}
-          className="w-full mt-2"
-        />
+        <div>
+          <SliderLabel
+            label="Chaos"
+            value={`${Math.round(params.chaos * 100)}%`}
+            variant="red"
+          />
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.05"
+            value={params.chaos}
+            onChange={(e) => handleChange("chaos", Number(e.target.value))}
+            className="bauhaus-slider thumb-red"
+          />
+        </div>
       </div>
 
       {/* Dynamics */}
-      <SectionTitle icon={Zap} title="Dynamics" />
+      <div className="border-b-4 border-bauhaus-black p-5">
+        <SectionTitle title="Dynamics" variant="yellow" />
 
-      <div className="grid grid-cols-2 gap-2">
-         <div>
-            <label className="text-xs text-slate-400">Min Vel</label>
-            <input 
-              type="number" min="0" max="127" value={params.velocityMin}
-              onChange={(e) => handleChange('velocityMin', Number(e.target.value))}
-              className="w-full bg-slate-800 text-slate-200 text-xs rounded border border-slate-700 p-1 mt-1"
+        <div className="grid grid-cols-2 gap-4 mb-5">
+          <div>
+            <label className="block text-xs font-bold uppercase mb-1 tracking-wide">
+              Min Vel
+            </label>
+            <input
+              type="number"
+              min="0"
+              max="127"
+              value={params.velocityMin}
+              onChange={(e) =>
+                handleChange("velocityMin", Number(e.target.value))
+              }
+              className={`${inputClass} text-center`}
             />
-         </div>
-         <div>
-            <label className="text-xs text-slate-400">Max Vel</label>
-            <input 
-              type="number" min="0" max="127" value={params.velocityMax}
-              onChange={(e) => handleChange('velocityMax', Number(e.target.value))}
-              className="w-full bg-slate-800 text-slate-200 text-xs rounded border border-slate-700 p-1 mt-1"
+          </div>
+          <div>
+            <label className="block text-xs font-bold uppercase mb-1 tracking-wide">
+              Max Vel
+            </label>
+            <input
+              type="number"
+              min="0"
+              max="127"
+              value={params.velocityMax}
+              onChange={(e) =>
+                handleChange("velocityMax", Number(e.target.value))
+              }
+              className={`${inputClass} text-center`}
             />
-         </div>
+          </div>
+        </div>
+
+        <div>
+          <SliderLabel
+            label="Humanize"
+            value={`${Math.round(params.humanize * 100)}%`}
+            variant="yellow"
+          />
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.05"
+            value={params.humanize}
+            onChange={(e) => handleChange("humanize", Number(e.target.value))}
+            className="bauhaus-slider thumb-yellow"
+          />
+        </div>
       </div>
 
-      <div className="mt-4">
-        <label className="text-xs text-slate-400 flex justify-between">
-          <span>Humanize (Timing/Vel)</span>
-          <span className="text-sky-400">{Math.round(params.humanize * 100)}%</span>
-        </label>
-        <input 
-          type="range" min="0" max="1" step="0.05" value={params.humanize} 
-          onChange={(e) => handleChange('humanize', Number(e.target.value))}
-          className="w-full mt-2"
-        />
+      {/* Note Lengths */}
+      <div className="p-5 pb-8">
+        <SectionTitle title="Note Lengths" variant="blue" />
+
+        <div className="flex gap-4">
+          <div className="flex-1">
+            <SliderLabel
+              label="Min (16ths)"
+              value={`${params.noteLengthMin}`}
+              variant="blue"
+            />
+            <input
+              type="range"
+              min="1"
+              max="16"
+              value={params.noteLengthMin}
+              onChange={(e) => {
+                const v = Number(e.target.value);
+                if (v > params.noteLengthMax) handleChange("noteLengthMax", v);
+                handleChange("noteLengthMin", v);
+              }}
+              className="bauhaus-slider thumb-blue"
+            />
+          </div>
+          <div className="flex-1">
+            <SliderLabel
+              label="Max (16ths)"
+              value={`${params.noteLengthMax}`}
+              variant="blue"
+            />
+            <input
+              type="range"
+              min="1"
+              max="16"
+              value={params.noteLengthMax}
+              onChange={(e) => {
+                const v = Number(e.target.value);
+                if (v < params.noteLengthMin) handleChange("noteLengthMin", v);
+                handleChange("noteLengthMax", v);
+              }}
+              className="bauhaus-slider thumb-blue"
+            />
+          </div>
+        </div>
       </div>
-
-       {/* Note Lengths */}
-       <SectionTitle icon={Clock} title="Note Lengths" />
-       
-       <div className="flex gap-4">
-        <div className="flex-1">
-             <label className="text-xs text-slate-400">Min (16ths)</label>
-             <input 
-                type="range" min="1" max="16" value={params.noteLengthMin}
-                onChange={(e) => {
-                    const v = Number(e.target.value);
-                    if(v > params.noteLengthMax) handleChange('noteLengthMax', v);
-                    handleChange('noteLengthMin', v);
-                }}
-                className="w-full mt-2"
-            />
-        </div>
-        <div className="flex-1">
-            <label className="text-xs text-slate-400">Max (16ths)</label>
-            <input 
-                type="range" min="1" max="16" value={params.noteLengthMax}
-                onChange={(e) => {
-                    const v = Number(e.target.value);
-                    if(v < params.noteLengthMin) handleChange('noteLengthMin', v);
-                    handleChange('noteLengthMax', v);
-                }}
-                className="w-full mt-2"
-            />
-        </div>
-       </div>
-
     </div>
   );
 };

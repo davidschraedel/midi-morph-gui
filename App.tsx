@@ -1,28 +1,33 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Download, Play, RefreshCw, Music4 } from 'lucide-react';
-import { GeneratorParams, MidiNote } from './types';
-import { DEFAULT_PARAMS } from './constants';
-import { generateNotes } from './services/midiGenerator';
-import { createMidiFile } from './services/midiWriter';
-import { Controls } from './components/Controls';
-import { Visualizer } from './components/Visualizer';
+import React, { useState, useEffect, useRef } from "react";
+import { Download, Play, RefreshCw } from "lucide-react";
+import { GeneratorParams, MidiNote } from "./types";
+import { DEFAULT_PARAMS } from "./constants";
+import { generateNotes } from "./services/midiGenerator";
+import { createMidiFile } from "./services/midiWriter";
+import { Controls } from "./components/Controls";
+import { Visualizer } from "./components/Visualizer";
+
+type PreviewSound = "sine" | "triangle" | "square" | "sawtooth";
+
+const PREVIEW_SOUNDS: { value: PreviewSound; label: string }[] = [
+  { value: "sine", label: "Sine" },
+  { value: "triangle", label: "Triangle" },
+  { value: "square", label: "Square" },
+  { value: "sawtooth", label: "Saw" },
+];
 
 const App: React.FC = () => {
   const [params, setParams] = useState<GeneratorParams>(DEFAULT_PARAMS);
   const [notes, setNotes] = useState<MidiNote[]>([]);
-  
-  // Audio Context for Preview (Simple Oscillator)
-  const audioCtxRef = useRef<AudioContext | null>(null);
-  const notesRef = useRef<MidiNote[]>([]); // Ref to access current notes in audio loop
+  const [previewSound, setPreviewSound] = useState<PreviewSound>("triangle");
 
-  // Keep notes ref updated
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const notesRef = useRef<MidiNote[]>([]);
+
   useEffect(() => {
     notesRef.current = notes;
   }, [notes]);
 
-  // Real-time regeneration
-  // Explicit dependencies ensure Tempo doesn't trigger regeneration,
-  // but humanize DOES (it will now only affect timing/vel due to stable seed)
   useEffect(() => {
     const newNotes = generateNotes(params);
     setNotes(newNotes);
@@ -38,22 +43,23 @@ const App: React.FC = () => {
     params.noteLengthMax,
     params.humanize,
     params.chaos,
-    params.seed
+    params.seed,
   ]);
 
   const handleRandomize = () => {
-    setParams(prev => ({
+    setParams((prev) => ({
       ...prev,
-      seed: Math.floor(Math.random() * 1000000)
+      seed: Math.floor(Math.random() * 1000000),
     }));
   };
 
-  // Audio Preview Logic
   const initAudio = () => {
     if (!audioCtxRef.current) {
-      audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      audioCtxRef.current = new (
+        window.AudioContext || (window as any).webkitAudioContext
+      )();
     }
-    if (audioCtxRef.current.state === 'suspended') {
+    if (audioCtxRef.current.state === "suspended") {
       audioCtxRef.current.resume();
     }
   };
@@ -62,35 +68,32 @@ const App: React.FC = () => {
     if (!audioCtxRef.current) return;
     const osc = audioCtxRef.current.createOscillator();
     const gain = audioCtxRef.current.createGain();
-    
-    // Convert MIDI to Freq
+
     const freq = 440 * Math.pow(2, (note.noteNumber - 69) / 12);
     osc.frequency.value = freq;
-    osc.type = 'triangle'; // Smoother than square
-    
-    // Velocity to Gain
-    const vol = note.velocity / 127 * 0.3; // Limit master volume
+    osc.type = previewSound;
+
+    const vol = (note.velocity / 127) * 0.3;
     gain.gain.setValueAtTime(0, time);
     gain.gain.linearRampToValueAtTime(vol, time + 0.01);
-    gain.gain.exponentialRampToValueAtTime(0.001, time + (note.duration / 480 * 60 / params.tempo));
-    
+    gain.gain.exponentialRampToValueAtTime(
+      0.001,
+      time + ((note.duration / 480) * 60) / params.tempo,
+    );
+
     osc.connect(gain);
     gain.connect(audioCtxRef.current.destination);
-    
+
     osc.start(time);
-    osc.stop(time + (note.duration / 480 * 60 / params.tempo) + 0.1);
+    osc.stop(time + ((note.duration / 480) * 60) / params.tempo + 0.1);
   };
 
   const playPreview = async () => {
     initAudio();
     if (!audioCtxRef.current) return;
 
-    // Very simple "play once" for preview
     const now = audioCtxRef.current.currentTime;
-    notes.forEach(note => {
-      // Calculate time in seconds based on tick
-      // tick / PPQ = quarter notes
-      // quarter notes * (60/BPM) = seconds
+    notes.forEach((note) => {
       const timeInSeconds = (note.startTime / 480) * (60 / params.tempo);
       playSound(note, now + timeInSeconds + 0.1);
     });
@@ -99,9 +102,9 @@ const App: React.FC = () => {
   const handleDownload = () => {
     const blob = createMidiFile(notes, params.tempo);
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = `midi-morph-${Date.now()}.mid`;
+    a.download = `midi-random-${Date.now()}.mid`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -109,74 +112,81 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row h-screen w-screen bg-slate-950 text-slate-100 font-sans overflow-auto md:overflow-hidden">
-      
+    <div className="flex flex-col md:flex-row h-screen w-screen bg-bauhaus-white text-bauhaus-black font-sans overflow-auto md:overflow-hidden antialiased">
       {/* Sidebar */}
-      <aside className="w-full md:w-80 flex-none flex flex-col border-r-0 border-b md:border-b-0 md:border-r border-slate-800 bg-slate-900 z-10 shadow-2xl h-auto md:h-full">
-        <div className="p-4 border-b border-slate-800 flex items-center gap-2">
-            <div className="w-8 h-8 rounded bg-gradient-to-br from-sky-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-sky-900/50">
-                <Music4 size={18} className="text-white" />
-            </div>
-            <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-indigo-400">MIDI Morph</h1>
+      <aside className="w-full md:w-80 flex-none flex flex-col border-b-4 md:border-b-0 md:border-r-4 border-bauhaus-black bg-bauhaus-white z-10 h-auto md:h-full">
+        <div className="px-4 py-3 border-b-4 border-bauhaus-black flex items-center gap-2">
+          <div className="w-6 h-6 bg-bauhaus-blue border-3 border-bauhaus-black flex items-center justify-center flex-none">
+            <div className="w-2 h-2 bg-bauhaus-yellow rounded-full" />
+          </div>
+          <h1 className="text-2xl font-extrabold uppercase tracking-widest leading-none mt-1">
+            MIDI Random
+          </h1>
         </div>
-        
+
         <div className="md:flex-1 md:overflow-hidden">
           <Controls params={params} onChange={setParams} isGenerating={false} />
         </div>
-        
-        <div className="p-4 border-t border-slate-800 bg-slate-900/50 text-xs text-slate-500 text-center hidden md:block">
-            v1.0.0 &bull; Local Generation
+
+        <div className="p-2 border-t-4 border-bauhaus-black bg-bauhaus-black text-bauhaus-white text-[10px] font-bold uppercase tracking-wider text-center hidden md:block">
+          v1.1.0 · Bauhaus Edition
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col bg-slate-950 relative min-w-0 min-h-[500px] md:min-h-0">
-        
-        {/* Top Bar */}
-        <header className="h-auto md:h-16 border-b border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between p-4 md:px-6 bg-slate-900/30 backdrop-blur-sm gap-4">
-            <div className="flex items-center gap-4">
-               <button 
+      <main className="flex-1 flex flex-col bg-bauhaus-white relative min-w-0 min-h-[500px] md:min-h-0">
+        {/* Action Toolbar */}
+        <header className="border-b-4 border-bauhaus-black bg-bauhaus-white p-3">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <div className="flex gap-2 text-sm font-bold flex-1">
+              <button
                 onClick={handleRandomize}
-                className="flex items-center gap-2 px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-sm font-medium transition-colors"
-               >
-                 <RefreshCw size={14} />
-                 Randomize Pattern
-               </button>
+                className="bauhaus-btn flex-1 bg-bauhaus-white border-3 border-bauhaus-black py-2 px-1 shadow-solid-sm uppercase flex items-center justify-center gap-1"
+              >
+                <RefreshCw size={16} strokeWidth={2.5} />
+                <span className="hidden sm:inline">Random</span>
+              </button>
+              <select
+                value={previewSound}
+                onChange={(e) =>
+                  setPreviewSound(e.target.value as PreviewSound)
+                }
+                aria-label="Preview sound"
+                className="bauhaus-input border-3 border-bauhaus-black bg-bauhaus-white py-2 px-2 font-bold text-xs shadow-solid-sm focus:outline-none rounded-none uppercase cursor-pointer flex-none min-w-[6.5rem]"
+              >
+                {PREVIEW_SOUNDS.map(({ value, label }) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+              <button
+                onClick={playPreview}
+                className="bauhaus-btn flex-1 bg-bauhaus-blue text-bauhaus-white border-3 border-bauhaus-black py-2 px-1 shadow-solid-sm uppercase flex items-center justify-center gap-1"
+              >
+                <Play size={16} fill="currentColor" />
+                <span className="hidden sm:inline">Preview</span>
+              </button>
+              <button
+                onClick={handleDownload}
+                className="bauhaus-btn flex-1 bg-bauhaus-red text-bauhaus-white border-3 border-bauhaus-black py-2 px-1 shadow-solid-sm uppercase flex items-center justify-center gap-1"
+              >
+                <Download size={16} strokeWidth={2.5} />
+                <span className="hidden sm:inline">Export</span>
+              </button>
             </div>
-            
-            <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-               <div className="px-4 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-xs text-slate-500 whitespace-nowrap">
-                  {notes.length} Notes
-               </div>
-               <div className="flex gap-2 ml-auto">
-                 <button 
-                   onClick={playPreview}
-                   className="flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium shadow-lg shadow-indigo-900/20 active:scale-95 transition-all"
-                 >
-                   <Play size={16} fill="currentColor" />
-                   <span className="hidden sm:inline">Preview</span>
-                 </button>
-                 <button 
-                   onClick={handleDownload}
-                   className="flex items-center gap-2 px-4 py-2 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-900 font-bold shadow-lg shadow-sky-900/20 active:scale-95 transition-all"
-                 >
-                   <Download size={18} />
-                   <span className="hidden sm:inline">Export</span>
-                 </button>
-               </div>
+            <div className="px-1 text-xs font-bold uppercase tracking-wide text-bauhaus-black/60 text-center sm:text-left whitespace-nowrap">
+              {notes.length} Notes
             </div>
+          </div>
         </header>
 
         {/* Visualization Area */}
-        <div className="flex-1 p-4 md:p-6 overflow-hidden flex flex-col">
-            <div className="flex-1 overflow-x-auto overflow-y-hidden border border-slate-800 rounded-lg bg-slate-900">
-                <Visualizer notes={notes} params={params} />
-            </div>
-            <div className="mt-4 text-center text-slate-500 text-xs font-mono hidden md:block">
-                Dragging sliders updates the generative algorithm in real-time.
-            </div>
+        <div className="flex-1 overflow-hidden flex flex-col border-b-4 md:border-b-0 border-bauhaus-black">
+          <div className="flex-1 overflow-x-auto overflow-y-hidden piano-roll-container">
+            <Visualizer notes={notes} params={params} />
+          </div>
         </div>
-
       </main>
     </div>
   );
