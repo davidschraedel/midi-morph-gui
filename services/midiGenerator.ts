@@ -90,6 +90,7 @@ export const generateNotes = (params: GeneratorParams): MidiNote[] => {
   if (availableNotes.length === 0) return []; // Fallback
 
   let lastNoteNumber: number | null = null;
+  const maxTick = totalSteps * TICKS_PER_16TH - 1;
 
   for (let i = 0; i < totalSteps; i++) {
     // Density jitter + gate
@@ -142,14 +143,22 @@ export const generateNotes = (params: GeneratorParams): MidiNote[] => {
         velocity = Math.max(1, Math.min(127, Math.floor(velocity + jitter)));
     }
 
+    // Macro timing: blend grid position toward a random tick in the bar
+    const gridTick = i * TICKS_PER_16TH;
+    let startTick = gridTick;
+    const macroTimingRaw = rng();
+    if (params.timing > 0) {
+      const randomTick = macroTimingRaw * maxTick;
+      startTick = gridTick + (randomTick - gridTick) * params.timing;
+    }
+
     // Timing Offset - Calculate offset even if humanize is 0
-    let startTick = i * TICKS_PER_16TH;
     const timingOffsetRaw = rng();
     if (params.humanize > 0) {
        const offset = (timingOffsetRaw - 0.5) * (TICKS_PER_16TH / 2) * params.humanize;
        startTick += offset;
     }
-    if (startTick < 0) startTick = 0;
+    startTick = clamp(Math.floor(startTick), 0, maxTick);
 
     // Duration Humanization
     const durationRaw = rng();

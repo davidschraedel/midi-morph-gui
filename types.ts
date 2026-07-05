@@ -24,6 +24,7 @@ export interface GeneratorParams {
   noteLengthMin: number; // in 16th notes
   noteLengthMax: number; // in 16th notes
   humanize: number; // 0-1 timing offset
+  timing: number; // 0-1 macro-timing (off-grid placement)
   chaos: number; // 0-1 randomness factor
   seed: number; // Seed for deterministic generation
 }

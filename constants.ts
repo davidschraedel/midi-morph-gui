@@ -12,6 +12,7 @@ export const DEFAULT_PARAMS: GeneratorParams = {
   noteLengthMin: 1,
   noteLengthMax: 4,
   humanize: 0.1,
+  timing: 0,
   chaos: 0.2,
   seed: 12345 // Default seed
 };
