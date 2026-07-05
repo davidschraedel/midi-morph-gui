@@ -7,9 +7,19 @@ import { createMidiFile } from "./services/midiWriter";
 import { Controls } from "./components/Controls";
 import { Visualizer } from "./components/Visualizer";
 
+type PreviewSound = "sine" | "triangle" | "square" | "sawtooth";
+
+const PREVIEW_SOUNDS: { value: PreviewSound; label: string }[] = [
+  { value: "sine", label: "Sine" },
+  { value: "triangle", label: "Triangle" },
+  { value: "square", label: "Square" },
+  { value: "sawtooth", label: "Saw" },
+];
+
 const App: React.FC = () => {
   const [params, setParams] = useState<GeneratorParams>(DEFAULT_PARAMS);
   const [notes, setNotes] = useState<MidiNote[]>([]);
+  const [previewSound, setPreviewSound] = useState<PreviewSound>("triangle");
 
   const audioCtxRef = useRef<AudioContext | null>(null);
   const notesRef = useRef<MidiNote[]>([]);
@@ -61,7 +71,7 @@ const App: React.FC = () => {
 
     const freq = 440 * Math.pow(2, (note.noteNumber - 69) / 12);
     osc.frequency.value = freq;
-    osc.type = "triangle";
+    osc.type = previewSound;
 
     const vol = (note.velocity / 127) * 0.3;
     gain.gain.setValueAtTime(0, time);
@@ -136,6 +146,20 @@ const App: React.FC = () => {
                 <RefreshCw size={16} strokeWidth={2.5} />
                 <span className="hidden sm:inline">Random</span>
               </button>
+              <select
+                value={previewSound}
+                onChange={(e) =>
+                  setPreviewSound(e.target.value as PreviewSound)
+                }
+                aria-label="Preview sound"
+                className="bauhaus-input border-3 border-bauhaus-black bg-bauhaus-white py-2 px-2 font-bold text-xs shadow-solid-sm focus:outline-none rounded-none uppercase cursor-pointer flex-none min-w-[6.5rem]"
+              >
+                {PREVIEW_SOUNDS.map(({ value, label }) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
               <button
                 onClick={playPreview}
                 className="bauhaus-btn flex-1 bg-bauhaus-blue text-bauhaus-white border-3 border-bauhaus-black py-2 px-1 shadow-solid-sm uppercase flex items-center justify-center gap-1"
