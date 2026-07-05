@@ -112,14 +112,14 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row h-screen w-screen bg-bauhaus-white text-bauhaus-black font-sans overflow-auto md:overflow-hidden antialiased">
+    <div className="flex flex-col md:flex-row h-screen w-screen bg-bauhaus-white text-bauhaus-charcoal font-sans overflow-auto md:overflow-hidden antialiased">
       {/* Sidebar */}
       <aside className="w-full md:w-80 flex-none flex flex-col border-b-4 md:border-b-0 md:border-r-4 border-bauhaus-black bg-bauhaus-white z-10 h-auto md:h-full">
-        <div className="px-4 py-3 border-b-4 border-bauhaus-black flex items-center gap-2">
-          <div className="w-6 h-6 bg-bauhaus-blue border-3 border-bauhaus-black flex items-center justify-center flex-none">
+        <div className="px-4 py-3 border-b-2 border-bauhaus-black flex items-center gap-2">
+          <div className="w-6 h-6 bg-bauhaus-blue border-2 border-bauhaus-black flex items-center justify-center flex-none">
             <div className="w-2 h-2 bg-bauhaus-yellow rounded-full" />
           </div>
-          <h1 className="text-2xl font-extrabold uppercase tracking-widest leading-none mt-1">
+          <h1 className="text-2xl font-extrabold uppercase tracking-widest leading-none mt-1 text-bauhaus-black">
             MIDI Random
           </h1>
         </div>
@@ -128,7 +128,7 @@ const App: React.FC = () => {
           <Controls params={params} onChange={setParams} isGenerating={false} />
         </div>
 
-        <div className="p-2 border-t-4 border-bauhaus-black bg-bauhaus-black text-bauhaus-white text-[10px] font-bold uppercase tracking-wider text-center hidden md:block">
+        <div className="p-2 border-t-2 border-bauhaus-black bg-bauhaus-black text-bauhaus-white text-[10px] font-normal uppercase tracking-wide text-center hidden md:block">
           v1.1.0 · Bauhaus Edition
         </div>
       </aside>
@@ -136,12 +136,12 @@ const App: React.FC = () => {
       {/* Main Content */}
       <main className="flex-1 flex flex-col bg-bauhaus-white relative min-w-0 min-h-[500px] md:min-h-0">
         {/* Action Toolbar */}
-        <header className="border-b-4 border-bauhaus-black bg-bauhaus-white p-3">
+        <header className="border-b-2 border-bauhaus-black bg-bauhaus-white p-3">
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-            <div className="flex gap-2 text-sm font-bold flex-1">
+            <div className="flex gap-2 text-sm flex-1">
               <button
                 onClick={handleRandomize}
-                className="bauhaus-btn flex-1 bg-bauhaus-white border-3 border-bauhaus-black py-2 px-1 shadow-solid-sm uppercase flex items-center justify-center gap-1"
+                className="bauhaus-btn flex-1 bg-bauhaus-white border-2 border-bauhaus-black py-2 px-1 font-semibold uppercase tracking-wide flex items-center justify-center gap-1"
               >
                 <RefreshCw size={16} strokeWidth={2.5} />
                 <span className="hidden sm:inline">Random</span>
@@ -152,7 +152,7 @@ const App: React.FC = () => {
                   setPreviewSound(e.target.value as PreviewSound)
                 }
                 aria-label="Preview sound"
-                className="bauhaus-input border-3 border-bauhaus-black bg-bauhaus-white py-2 px-2 font-bold text-xs shadow-solid-sm focus:outline-none rounded-none uppercase cursor-pointer flex-none min-w-[6.5rem]"
+                className="bauhaus-input border-2 border-bauhaus-black bg-bauhaus-white py-2 px-2 font-normal text-xs focus:outline-none rounded-none cursor-pointer flex-none min-w-[6.5rem]"
               >
                 {PREVIEW_SOUNDS.map(({ value, label }) => (
                   <option key={value} value={value}>
@@ -162,27 +162,27 @@ const App: React.FC = () => {
               </select>
               <button
                 onClick={playPreview}
-                className="bauhaus-btn flex-1 bg-bauhaus-blue text-bauhaus-white border-3 border-bauhaus-black py-2 px-1 shadow-solid-sm uppercase flex items-center justify-center gap-1"
+                className="bauhaus-btn flex-1 bg-bauhaus-blue text-bauhaus-white border-2 border-bauhaus-black py-2 px-1 shadow-solid-sm font-semibold uppercase tracking-wide flex items-center justify-center gap-1"
               >
                 <Play size={16} fill="currentColor" />
                 <span className="hidden sm:inline">Preview</span>
               </button>
               <button
                 onClick={handleDownload}
-                className="bauhaus-btn flex-1 bg-bauhaus-red text-bauhaus-white border-3 border-bauhaus-black py-2 px-1 shadow-solid-sm uppercase flex items-center justify-center gap-1"
+                className="bauhaus-btn flex-1 bg-bauhaus-red text-bauhaus-white border-2 border-bauhaus-black py-2 px-1 shadow-solid-sm font-semibold uppercase tracking-wide flex items-center justify-center gap-1"
               >
                 <Download size={16} strokeWidth={2.5} />
                 <span className="hidden sm:inline">Export</span>
               </button>
             </div>
-            <div className="px-1 text-xs font-bold uppercase tracking-wide text-bauhaus-black/60 text-center sm:text-left whitespace-nowrap">
-              {notes.length} Notes
+            <div className="px-1 text-xs font-normal tracking-wide text-bauhaus-charcoal/60 text-center sm:text-left whitespace-nowrap">
+              {notes.length} notes
             </div>
           </div>
         </header>
 
         {/* Visualization Area */}
-        <div className="flex-1 overflow-hidden flex flex-col border-b-4 md:border-b-0 border-bauhaus-black">
+        <div className="flex-1 overflow-hidden flex flex-col border-b-2 md:border-b-0 border-bauhaus-black">
           <div className="flex-1 overflow-x-auto overflow-y-hidden piano-roll-container">
             <Visualizer notes={notes} params={params} />
           </div>

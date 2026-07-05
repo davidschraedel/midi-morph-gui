@@ -21,7 +21,8 @@
                 blue: '#0F4C81',
                 yellow: '#F0C808',
                 black: '#1A1A1A',
-                white: '#F7F7F7',
+                charcoal: '#2A2A2A',
+                white: '#F0EBE3',
               }
             },
             borderWidth: {
@@ -39,8 +40,8 @@
     </script>
     <style>
       body {
-        background-color: #F7F7F7;
-        color: #1A1A1A;
+        background-color: #F0EBE3;
+        color: #2A2A2A;
       }
 
       ::selection {
@@ -57,16 +58,20 @@
         cursor: pointer;
       }
 
-      .bauhaus-btn:hover,
-      .bauhaus-input:hover,
-      .bauhaus-input:focus {
+      .bauhaus-btn.shadow-solid-sm:hover {
         transform: translate(-1px, -1px);
         box-shadow: 4px 4px 0px 0px rgba(26, 26, 26, 1);
       }
 
-      .bauhaus-btn:active {
+      .bauhaus-btn.shadow-solid-sm:active {
         transform: translate(2px, 2px);
         box-shadow: none;
+      }
+
+      .bauhaus-input:hover,
+      .bauhaus-input:focus {
+        border-color: #0F4C81;
+        outline: none;
       }
 
       select.bauhaus-input {
@@ -90,61 +95,47 @@
         width: 100%;
         height: 8px;
         cursor: pointer;
-        background: #1A1A1A;
-        border: 2px solid #1A1A1A;
+        background: #2A2A2A;
+        border: 2px solid #2A2A2A;
       }
 
       input[type=range].bauhaus-slider::-webkit-slider-thumb {
-        height: 24px;
-        width: 24px;
-        border: 3px solid #1A1A1A;
+        height: 22px;
+        width: 22px;
+        border: 2px solid #1A1A1A;
         background-color: #0F4C81;
         cursor: grab;
         -webkit-appearance: none;
-        margin-top: -10px;
-        box-shadow: 2px 2px 0px 0px rgba(26,26,26,1);
-        transition: transform 0.12s ease, box-shadow 0.12s ease;
-      }
-
-      input[type=range].bauhaus-slider:hover::-webkit-slider-thumb {
-        transform: translate(-1px, -1px);
-        box-shadow: 3px 3px 0px 0px rgba(26, 26, 26, 1);
+        margin-top: -9px;
+        transition: transform 0.12s ease;
       }
 
       input[type=range].bauhaus-slider:active::-webkit-slider-thumb {
         cursor: grabbing;
-        transform: translate(1px, 1px);
-        box-shadow: 1px 1px 0px 0px rgba(26, 26, 26, 1);
+        transform: scale(1.05);
       }
 
       input[type=range].bauhaus-slider::-moz-range-track {
         width: 100%;
         height: 8px;
         cursor: pointer;
-        background: #1A1A1A;
-        border: 2px solid #1A1A1A;
+        background: #2A2A2A;
+        border: 2px solid #2A2A2A;
       }
 
       input[type=range].bauhaus-slider::-moz-range-thumb {
-        height: 24px;
-        width: 24px;
-        border: 3px solid #1A1A1A;
+        height: 22px;
+        width: 22px;
+        border: 2px solid #1A1A1A;
         background-color: #0F4C81;
         cursor: grab;
         border-radius: 0;
-        box-shadow: 2px 2px 0px 0px rgba(26, 26, 26, 1);
-        transition: transform 0.12s ease, box-shadow 0.12s ease;
-      }
-
-      input[type=range].bauhaus-slider:hover::-moz-range-thumb {
-        transform: translate(-1px, -1px);
-        box-shadow: 3px 3px 0px 0px rgba(26, 26, 26, 1);
+        transition: transform 0.12s ease;
       }
 
       input[type=range].bauhaus-slider:active::-moz-range-thumb {
         cursor: grabbing;
-        transform: translate(1px, 1px);
-        box-shadow: 1px 1px 0px 0px rgba(26, 26, 26, 1);
+        transform: scale(1.05);
       }
 
       input[type=range].bauhaus-slider.thumb-red::-webkit-slider-thumb {
@@ -164,8 +155,8 @@
       }
 
       .custom-scrollbar::-webkit-scrollbar-track {
-        background: #F7F7F7;
-        border-left: 3px solid #1A1A1A;
+        background: #F0EBE3;
+        border-left: 2px solid #1A1A1A;
       }
 
       .custom-scrollbar::-webkit-scrollbar-thumb {
@@ -178,8 +169,8 @@
       }
 
       .piano-roll-container::-webkit-scrollbar-track {
-        background: #F7F7F7;
-        border-top: 3px solid #1A1A1A;
+        background: #F0EBE3;
+        border-top: 2px solid #1A1A1A;
       }
 
       .piano-roll-container::-webkit-scrollbar-thumb {
@@ -187,12 +178,6 @@
         border: 2px solid #1A1A1A;
       }
 
-      .grid-bg {
-        background-image:
-          linear-gradient(to right, rgba(26,26,26,0.1) 1px, transparent 1px),
-          linear-gradient(to bottom, rgba(26,26,26,0.2) 2px, transparent 2px);
-        background-size: 40px 32px;
-      }
     </style>
   <script type="importmap">
 {
