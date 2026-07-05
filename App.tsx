@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Download, Play, RefreshCw } from "lucide-react";
+import { Download, Play, Shuffle } from "lucide-react";
 import { GeneratorParams, MidiNote } from "./types";
 import { DEFAULT_PARAMS } from "./constants";
 import { generateNotes } from "./services/midiGenerator";
@@ -141,9 +141,10 @@ const App: React.FC = () => {
             <div className="flex gap-2 text-sm flex-1">
               <button
                 onClick={handleRandomize}
+                aria-label="Randomize"
                 className="bauhaus-btn flex-1 bg-bauhaus-white border-2 border-bauhaus-black py-2 px-1 font-semibold uppercase tracking-wide flex items-center justify-center gap-1"
               >
-                <RefreshCw size={16} strokeWidth={2.5} />
+                <Shuffle size={16} strokeWidth={2.5} />
                 <span className="hidden sm:inline">Random</span>
               </button>
               <select
