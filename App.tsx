@@ -94,7 +94,7 @@ const App: React.FC = () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `midi-morph-${Date.now()}.mid`;
+    a.download = `midi-random-${Date.now()}.mid`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -110,7 +110,7 @@ const App: React.FC = () => {
             <div className="w-2 h-2 bg-bauhaus-yellow rounded-full" />
           </div>
           <h1 className="text-2xl font-extrabold uppercase tracking-widest leading-none mt-1">
-            MIDI Morph
+            MIDI Random
           </h1>
         </div>
 
@@ -131,27 +131,27 @@ const App: React.FC = () => {
             <div className="flex gap-2 text-sm font-bold flex-1">
               <button
                 onClick={handleRandomize}
-                className="flex-1 bg-bauhaus-white border-3 border-bauhaus-black py-2 px-1 shadow-solid-sm active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all uppercase flex items-center justify-center gap-1"
+                className="bauhaus-btn flex-1 bg-bauhaus-white border-3 border-bauhaus-black py-2 px-1 shadow-solid-sm uppercase flex items-center justify-center gap-1"
               >
                 <RefreshCw size={16} strokeWidth={2.5} />
                 <span className="hidden sm:inline">Random</span>
               </button>
               <button
                 onClick={playPreview}
-                className="flex-1 bg-bauhaus-blue text-bauhaus-white border-3 border-bauhaus-black py-2 px-1 shadow-solid-sm active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all uppercase flex items-center justify-center gap-1"
+                className="bauhaus-btn flex-1 bg-bauhaus-blue text-bauhaus-white border-3 border-bauhaus-black py-2 px-1 shadow-solid-sm uppercase flex items-center justify-center gap-1"
               >
                 <Play size={16} fill="currentColor" />
                 <span className="hidden sm:inline">Preview</span>
               </button>
               <button
                 onClick={handleDownload}
-                className="flex-1 bg-bauhaus-red text-bauhaus-white border-3 border-bauhaus-black py-2 px-1 shadow-solid-sm active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all uppercase flex items-center justify-center gap-1"
+                className="bauhaus-btn flex-1 bg-bauhaus-red text-bauhaus-white border-3 border-bauhaus-black py-2 px-1 shadow-solid-sm uppercase flex items-center justify-center gap-1"
               >
                 <Download size={16} strokeWidth={2.5} />
                 <span className="hidden sm:inline">Export</span>
               </button>
             </div>
-            <div className="px-3 py-1.5 border-3 border-bauhaus-black bg-bauhaus-white text-xs font-bold uppercase tracking-wide shadow-solid-sm text-center sm:text-left whitespace-nowrap">
+            <div className="px-1 text-xs font-bold uppercase tracking-wide text-bauhaus-black/60 text-center sm:text-left whitespace-nowrap">
               {notes.length} Notes
             </div>
           </div>

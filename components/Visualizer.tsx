@@ -103,7 +103,6 @@ export const Visualizer: React.FC<VisualizerProps> = ({ notes, params }) => {
             fill={getNoteColor(note.velocity)}
             stroke={BAUHAUS.black}
             strokeWidth={3}
-            className="transition-all duration-75 ease-out hover:opacity-80"
           >
             <title>{`${NOTE_NAMES[note.noteNumber % 12]}${Math.floor(note.noteNumber / 12)} | Vel: ${note.velocity}`}</title>
           </rect>

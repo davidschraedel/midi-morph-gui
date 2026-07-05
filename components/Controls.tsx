@@ -12,7 +12,7 @@ type SectionVariant = "black" | "red" | "yellow" | "blue";
 const sectionStyles: Record<SectionVariant, string> = {
   black: "bg-bauhaus-black text-bauhaus-white",
   red: "bg-bauhaus-red text-bauhaus-white",
-  yellow: "bg-bauhaus-yellow text-bauhaus-black border-2 border-bauhaus-black",
+  yellow: "bg-bauhaus-yellow text-bauhaus-black",
   blue: "bg-bauhaus-blue text-bauhaus-white",
 };
 
@@ -24,7 +24,7 @@ const valueStyles: Record<SectionVariant, string> = {
 };
 
 const inputClass =
-  "w-full border-3 border-bauhaus-black bg-bauhaus-white p-2 font-bold text-sm shadow-solid-sm focus:outline-none rounded-none";
+  "bauhaus-input w-full border-3 border-bauhaus-black bg-bauhaus-white p-2 font-bold text-sm shadow-solid-sm focus:outline-none rounded-none";
 
 export const Controls: React.FC<ControlsProps> = ({ params, onChange }) => {
   const handleChange = <K extends keyof GeneratorParams>(
