@@ -21,8 +21,8 @@ const App: React.FC = () => {
   }, [notes]);
 
   // Real-time regeneration
-  // Explicit dependencies ensure Tempo doesn't trigger regeneration,
-  // but humanize DOES (it will now only affect timing/vel due to stable seed)
+  // Explicit dependencies ensure Tempo doesn't trigger regeneration.
+  // Humanize only affects timing/velocity when structure params (incl. seed) are fixed.
   useEffect(() => {
     const newNotes = generateNotes(params);
     setNotes(newNotes);
@@ -131,7 +131,7 @@ const App: React.FC = () => {
         </div>
 
         <div className="p-4 border-t border-slate-800 bg-slate-900/50 text-xs text-slate-500 text-center hidden md:block">
-          v1.0.0
+          v1.1.0
         </div>
       </aside>
 

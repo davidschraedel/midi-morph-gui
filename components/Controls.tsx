@@ -103,6 +103,9 @@ export const Controls: React.FC<ControlsProps> = ({ params, onChange, isGenerati
           onChange={(e) => handleChange('chaos', Number(e.target.value))}
           className="w-full mt-2"
         />
+        <p className="text-[10px] text-slate-500 mt-1">
+          Low: stepwise melodies, in-scale, steady grid. High: jumps, blue notes, irregular gaps.
+        </p>
       </div>
 
       {/* Dynamics */}
