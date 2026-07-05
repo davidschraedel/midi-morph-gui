@@ -4,25 +4,34 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MIDI Morph</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;600;800&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     <script>
       tailwind.config = {
         theme: {
           extend: {
             fontFamily: {
-              sans: ['Inter', 'sans-serif'],
-              mono: ['JetBrains Mono', 'monospace'],
+              sans: ['Jost', 'sans-serif'],
             },
             colors: {
-              midi: {
-                bg: '#0f172a',
-                panel: '#1e293b',
-                accent: '#38bdf8',
-                accentHover: '#0ea5e9',
-                note: '#10b981',
-                grid: '#334155'
+              bauhaus: {
+                red: '#D92121',
+                blue: '#0F4C81',
+                yellow: '#F0C808',
+                black: '#1A1A1A',
+                white: '#F7F7F7',
               }
+            },
+            borderWidth: {
+              '3': '3px',
+              '4': '4px',
+              '6': '6px',
+            },
+            boxShadow: {
+              'solid': '4px 4px 0px 0px rgba(26,26,26,1)',
+              'solid-sm': '2px 2px 0px 0px rgba(26,26,26,1)',
             }
           }
         }
@@ -30,30 +39,90 @@
     </script>
     <style>
       body {
-        background-color: #0f172a;
-        color: #f8fafc;
+        background-color: #F7F7F7;
+        color: #1A1A1A;
       }
-      /* Custom slider styling */
-      input[type=range] {
+
+      ::selection {
+        background-color: #F0C808;
+        color: #1A1A1A;
+      }
+
+      input[type=range].bauhaus-slider {
         -webkit-appearance: none;
-        background: transparent;
-      }
-      input[type=range]::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        height: 16px;
-        width: 16px;
-        border-radius: 50%;
-        background: #38bdf8;
-        cursor: pointer;
-        margin-top: -6px;
-        box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
-      }
-      input[type=range]::-webkit-slider-runnable-track {
         width: 100%;
-        height: 4px;
+        background: transparent;
+        margin: 10px 0;
+      }
+
+      input[type=range].bauhaus-slider:focus {
+        outline: none;
+      }
+
+      input[type=range].bauhaus-slider::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 8px;
         cursor: pointer;
-        background: #334155;
-        border-radius: 2px;
+        background: #1A1A1A;
+        border: 2px solid #1A1A1A;
+      }
+
+      input[type=range].bauhaus-slider::-webkit-slider-thumb {
+        height: 24px;
+        width: 24px;
+        border: 3px solid #1A1A1A;
+        background-color: #0F4C81;
+        cursor: pointer;
+        -webkit-appearance: none;
+        margin-top: -10px;
+        box-shadow: 2px 2px 0px 0px rgba(26,26,26,1);
+      }
+
+      input[type=range].bauhaus-slider.thumb-red::-webkit-slider-thumb {
+        background-color: #D92121;
+      }
+
+      input[type=range].bauhaus-slider.thumb-yellow::-webkit-slider-thumb {
+        background-color: #F0C808;
+      }
+
+      input[type=range].bauhaus-slider.thumb-blue::-webkit-slider-thumb {
+        background-color: #0F4C81;
+      }
+
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 12px;
+      }
+
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: #F7F7F7;
+        border-left: 3px solid #1A1A1A;
+      }
+
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background-color: #D92121;
+        border: 2px solid #1A1A1A;
+      }
+
+      .piano-roll-container::-webkit-scrollbar {
+        height: 12px;
+      }
+
+      .piano-roll-container::-webkit-scrollbar-track {
+        background: #F7F7F7;
+        border-top: 3px solid #1A1A1A;
+      }
+
+      .piano-roll-container::-webkit-scrollbar-thumb {
+        background-color: #D92121;
+        border: 2px solid #1A1A1A;
+      }
+
+      .grid-bg {
+        background-image:
+          linear-gradient(to right, rgba(26,26,26,0.1) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(26,26,26,0.2) 2px, transparent 2px);
+        background-size: 40px 32px;
       }
     </style>
   <script type="importmap">
