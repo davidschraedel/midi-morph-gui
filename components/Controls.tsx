@@ -10,9 +10,11 @@ interface ControlsProps {
 type SectionVariant = "black" | "red" | "yellow" | "blue";
 
 const sectionStyles: Record<SectionVariant, string> = {
-  black: "border-l-4 border-bauhaus-black bg-bauhaus-black/10 text-bauhaus-black",
+  black:
+    "border-l-4 border-bauhaus-black bg-bauhaus-black/10 text-bauhaus-black",
   red: "border-l-4 border-bauhaus-red bg-bauhaus-red/10 text-bauhaus-black",
-  yellow: "border-l-4 border-bauhaus-yellow bg-bauhaus-yellow/10 text-bauhaus-black",
+  yellow:
+    "border-l-4 border-bauhaus-yellow bg-bauhaus-yellow/10 text-bauhaus-black",
   blue: "border-l-4 border-bauhaus-blue bg-bauhaus-blue/10 text-bauhaus-black",
 };
 
@@ -58,9 +60,7 @@ export const Controls: React.FC<ControlsProps> = ({ params, onChange }) => {
     variant: SectionVariant;
   }) => (
     <div className="flex justify-between items-baseline mb-1">
-      <label className="text-xs font-semibold tracking-wide">
-        {label}
-      </label>
+      <label className="text-xs font-semibold tracking-wide">{label}</label>
       <span className={`text-sm font-normal ${valueStyles[variant]}`}>
         {value}
       </span>
@@ -168,7 +168,7 @@ export const Controls: React.FC<ControlsProps> = ({ params, onChange }) => {
           />
         </div>
 
-        <div>
+        <div className="mb-5">
           <SliderLabel
             label="Chaos"
             value={`${Math.round(params.chaos * 100)}%`}
@@ -181,6 +181,23 @@ export const Controls: React.FC<ControlsProps> = ({ params, onChange }) => {
             step="0.05"
             value={params.chaos}
             onChange={(e) => handleChange("chaos", Number(e.target.value))}
+            className="bauhaus-slider thumb-red"
+          />
+        </div>
+
+        <div>
+          <SliderLabel
+            label="Timing"
+            value={`${Math.round(params.timing * 100)}%`}
+            variant="red"
+          />
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            value={params.timing}
+            onChange={(e) => handleChange("timing", Number(e.target.value))}
             className="bauhaus-slider thumb-red"
           />
         </div>

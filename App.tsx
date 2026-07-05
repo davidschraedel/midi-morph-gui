@@ -42,6 +42,7 @@ const App: React.FC = () => {
     params.noteLengthMin,
     params.noteLengthMax,
     params.humanize,
+    params.timing,
     params.chaos,
     params.seed,
   ]);
