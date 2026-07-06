@@ -74,12 +74,12 @@ export const Visualizer: React.FC<VisualizerProps> = ({ notes, params }) => {
 
   return (
     <div
-      className="w-full h-full min-w-[800px] min-h-[400px] relative"
+      className="viz-grid-flow w-full h-full min-w-[800px] min-h-[400px] relative overflow-hidden"
       style={{
         background: `linear-gradient(to bottom, ${BAUHAUS.light} 0%, ${BAUHAUS.shade} 100%)`,
       }}
     >
-      <svg className="w-full h-full" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none">
+      <svg className="relative z-[2] w-full h-full" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none">
         <defs>
           <linearGradient id="vizAmbient" x1="0" y1="0" x2="0" y2={height} gradientUnits="userSpaceOnUse">
             <stop offset="0%" stopColor={BAUHAUS.light} />
@@ -90,9 +90,45 @@ export const Visualizer: React.FC<VisualizerProps> = ({ notes, params }) => {
             <stop offset="55%" stopColor={BAUHAUS.blue} stopOpacity="0.12" />
             <stop offset="100%" stopColor={BAUHAUS.shade} stopOpacity="0" />
           </radialGradient>
+          <pattern id="driftGrid" width="40" height="32" patternUnits="userSpaceOnUse">
+            <animateTransform
+              attributeName="patternTransform"
+              type="translate"
+              values="0 0; 20 4; 40 8; 20 12; 0 16; -20 12; -40 8; -20 4; 0 0"
+              dur="32s"
+              repeatCount="indefinite"
+            />
+            <line x1="0" y1="0" x2="40" y2="0" stroke={BAUHAUS.charcoal} strokeWidth="1" opacity="0.07" />
+            <line x1="0" y1="0" x2="0" y2="32" stroke={BAUHAUS.charcoal} strokeWidth="1" opacity="0.05" />
+          </pattern>
+          <linearGradient
+            id="waterSheen"
+            gradientUnits="userSpaceOnUse"
+            x1={0}
+            y1={0}
+            x2={360}
+            y2={0}
+          >
+            <animateTransform
+              attributeName="gradientTransform"
+              type="translate"
+              values={`${-360} 0; ${width + 360} 0`}
+              dur="24s"
+              repeatCount="indefinite"
+            />
+            <stop offset="0%" stopColor={BAUHAUS.light} stopOpacity="0" />
+            <stop offset="38%" stopColor={BAUHAUS.light} stopOpacity="0" />
+            <stop offset="50%" stopColor={BAUHAUS.white} stopOpacity="0.022" />
+            <stop offset="62%" stopColor={BAUHAUS.light} stopOpacity="0" />
+            <stop offset="100%" stopColor={BAUHAUS.light} stopOpacity="0" />
+          </linearGradient>
         </defs>
 
         <rect x={0} y={0} width={width} height={height} fill="url(#vizAmbient)" />
+
+        <rect x={32} y={0} width={width - 32} height={height} fill="url(#driftGrid)" />
+
+        <rect x={0} y={0} width={width} height={height} fill="url(#waterSheen)" />
 
         {noteCluster && (
           <ellipse
@@ -105,6 +141,14 @@ export const Visualizer: React.FC<VisualizerProps> = ({ notes, params }) => {
         )}
 
         {/* Horizontal grid rows */}
+        <g>
+          <animateTransform
+            attributeName="transform"
+            type="translate"
+            values="0 0; 1.5 0.5; 0 1; -1.5 0.5; 0 0"
+            dur="24s"
+            repeatCount="indefinite"
+          />
         {Array.from({ length: maxNote - minNote + 6 }).map((_, i) => {
           const noteNum = minNote - 2 + i;
           const isBlackKey = [1, 3, 6, 8, 10].includes(noteNum % 12);
@@ -151,6 +195,7 @@ export const Visualizer: React.FC<VisualizerProps> = ({ notes, params }) => {
             />
           );
         })}
+        </g>
 
         {/* Notes */}
         {notes.map((note, i) => (
@@ -171,7 +216,7 @@ export const Visualizer: React.FC<VisualizerProps> = ({ notes, params }) => {
 
       {/* Y-axis labels */}
       <div
-        className="absolute left-0 top-0 bottom-0 w-8 border-r-2 border-bauhaus-black flex flex-col text-[10px] font-semibold text-center pointer-events-none text-bauhaus-charcoal"
+        className="absolute left-0 top-0 bottom-0 w-8 z-[3] border-r-2 border-bauhaus-black flex flex-col text-[10px] font-semibold text-center pointer-events-none text-bauhaus-charcoal"
         style={{
           background: `linear-gradient(to bottom, ${BAUHAUS.light} 0%, ${BAUHAUS.shade} 100%)`,
         }}
