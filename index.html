@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MIDI Morph</title>
+    <title>MIDI Random</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -181,6 +181,41 @@
       .piano-roll-container::-webkit-scrollbar-thumb {
         background-color: #d92121;
         border: 2px solid #1a1a1a;
+      }
+
+      .viz-grid-flow::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          115deg,
+          transparent 0%,
+          transparent 38%,
+          rgba(250, 247, 242, 0.07) 50%,
+          transparent 62%,
+          transparent 100%
+        );
+        background-size: 320% 100%;
+        animation: viz-water-shimmer 22s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      @keyframes viz-water-shimmer {
+        0%,
+        100% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .viz-grid-flow::before {
+          animation: none;
+          display: none;
+        }
       }
     </style>
     <script type="importmap">
