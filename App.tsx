@@ -116,11 +116,11 @@ const App: React.FC = () => {
     <div className="flex flex-col md:flex-row h-screen w-screen bg-bauhaus-white text-bauhaus-charcoal font-sans overflow-auto md:overflow-hidden antialiased">
       {/* Sidebar */}
       <aside className="w-full md:w-80 flex-none flex flex-col border-b-4 md:border-b-0 md:border-r-4 border-bauhaus-black bg-bauhaus-white z-10 h-auto md:h-full">
-        <div className="px-4 py-3 border-b-2 border-bauhaus-black flex items-center gap-2">
-          <div className="w-6 h-6 bg-bauhaus-blue border-2 border-bauhaus-black flex items-center justify-center flex-none">
+        <div className="px-4 py-3 border-b-2 border-bauhaus-black bg-bauhaus-black flex items-center gap-2">
+          <div className="w-6 h-6 bg-bauhaus-blue border-2 border-bauhaus-white flex items-center justify-center flex-none">
             <div className="w-2 h-2 bg-bauhaus-yellow rounded-full" />
           </div>
-          <h1 className="text-2xl font-extrabold uppercase tracking-widest leading-none mt-1 text-bauhaus-black">
+          <h1 className="text-2xl font-extrabold uppercase tracking-widest leading-none mt-1 text-bauhaus-white">
             MIDI Random
           </h1>
         </div>
